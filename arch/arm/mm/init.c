@@ -525,6 +525,8 @@ void __init mem_init(void)
 
 	set_max_mapnr(pfn_to_page(max_pfn) - mem_map);
 
+	bprintk("max_pfn=%d, max_mapnr=%d\n", max_pfn, max_mapnr);
+
 	/* this will put all unused low memory onto the freelists */
 	free_unused_memmap();
 	free_all_bootmem();

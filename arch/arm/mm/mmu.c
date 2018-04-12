@@ -1078,6 +1078,9 @@ void __init sanity_check_meminfo(void)
 		phys_addr_t block_end = reg->base + reg->size;
 		phys_addr_t size_limit = reg->size;
 
+		bprintk("block_start=0x%x, block_end=0x%x, size_limit=0x%x",
+				block_start, block_end, size_limit);
+
 		if (reg->base >= vmalloc_limit)
 			highmem = 1;
 		else
@@ -1146,6 +1149,8 @@ void __init sanity_check_meminfo(void)
 	if (!memblock_limit)
 		memblock_limit = arm_lowmem_limit;
 
+	bprintk("arm_lowmem_limit=0x%x, vmalloc_min=0x%x, vmalloc_limit=0x%x",
+			arm_lowmem_limit, vmalloc_min, vmalloc_limit);
 	memblock_set_current_limit(memblock_limit);
 }
 
@@ -1332,6 +1337,9 @@ static void __init map_lowmem(void)
 	phys_addr_t kernel_x_start = round_down(__pa(_stext), SECTION_SIZE);
 	phys_addr_t kernel_x_end = round_up(__pa(__init_end), SECTION_SIZE);
 
+	bprintk("kernel_x_start=0x%x, kernel_x_end=0x%x\n",
+			kernel_x_start, kernel_x_end);
+
 	/* Map all the lowmem memory banks. */
 	for_each_memblock(memory, reg) {
 		phys_addr_t start = reg->base;
@@ -1342,6 +1350,9 @@ static void __init map_lowmem(void)
 			end = arm_lowmem_limit;
 		if (start >= end)
 			break;
+
+		bprintk("start=0x%x, end=0x%x\n",
+				start, end);
 
 		if (end < kernel_x_start) {
 			map.pfn = __phys_to_pfn(start);
@@ -1365,6 +1376,7 @@ static void __init map_lowmem(void)
 				map.length = kernel_x_start - start;
 				map.type = MT_MEMORY_RW;
 
+				bprintk("create_mapping start < kernel_x_start\n");
 				create_mapping(&map);
 			}
 
@@ -1373,6 +1385,7 @@ static void __init map_lowmem(void)
 			map.length = kernel_x_end - kernel_x_start;
 			map.type = MT_MEMORY_RWX;
 
+			bprintk("create_mapping kernel x -> end\n");
 			create_mapping(&map);
 
 			if (kernel_x_end < end) {
@@ -1381,6 +1394,7 @@ static void __init map_lowmem(void)
 				map.length = end - kernel_x_end;
 				map.type = MT_MEMORY_RW;
 
+				bprintk("create_mapping: kernel_x_start -> end\n");
 				create_mapping(&map);
 			}
 		}

@@ -234,6 +234,9 @@ extern asmlinkage void dump_stack(void) __cold;
 #define pr_fmt(fmt) fmt
 #endif
 
+/*add benshushu printk*/
+#define bprintk(fmt, args...) printk(KERN_ERR "benshushu:%s: " fmt, __func__, ##args)
+
 /*
  * These can be used to print at the various log levels.
  * All of these will print unconditionally, although note that pr_debug()

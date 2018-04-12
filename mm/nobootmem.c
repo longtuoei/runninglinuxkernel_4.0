@@ -89,6 +89,9 @@ static void __init __free_pages_memory(unsigned long start, unsigned long end)
 	while (start < end) {
 		order = min(MAX_ORDER - 1UL, __ffs(start));
 
+		bprintk("ffs(start)=%d, start=0x%x, order=%d\n",
+				__ffs(start), start, order);
+
 		while (start + (1UL << order) > end)
 			order--;
 
@@ -124,6 +127,7 @@ static unsigned long __init free_low_memory_core_early(void)
 	for_each_free_mem_range(i, NUMA_NO_NODE, &start, &end, NULL)
 		count += __free_memory_core(start, end);
 
+		bprintk("start=0x%x, end=0x%x\n", start, end);
 #ifdef CONFIG_ARCH_DISCARD_MEMBLOCK
 	{
 		phys_addr_t size;
